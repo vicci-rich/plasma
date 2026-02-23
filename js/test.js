@@ -35,8 +35,8 @@ class Test {
         const childAdmin = this.childAdmin;
 
         //监听主链事件，并向子链发送存钱请求
-        rootEvents.events.Deposit()
-        .on("data", async (event) => {
+        const rootDepositSub = rootEvents.events.Deposit()
+        rootDepositSub.on("data", async (event) => {
           let data = event.returnValues;
           console.log("Deposit event:", data);
           try {
@@ -46,12 +46,13 @@ class Test {
           } catch (err) {
             console.error("Error in depositChildChain:", err);
           }
-        }).on("error", console.error);
+        })
+        rootDepositSub.on("error", console.error);
 
 
         //监听子链事件 
-        childEvents.events.CreateBlock()
-        .on("data", async (event) => {
+        const childCreateBlockSub = childEvents.events.CreateBlock()
+        childCreateBlockSub.on("data", async (event) => {
           let data = event.returnValues;
           console.log("CreateBlock event:", data);
 
@@ -117,7 +118,8 @@ class Test {
            } catch (err) {
              console.error("Error in child event processing:", err);
            }
-        }).on("error", console.error);
+        })
+        childCreateBlockSub.on("error", console.error);
   }
 }
 

@@ -1,11 +1,11 @@
 {
-		"rooturl": "http://127.0.0.1:7545",
-		"childurl": "http://127.0.0.1:7545",
-		"rootwsurl": "ws://127.0.0.1:7545",
-		"childwsurl": "ws://127.0.0.1:7545",
-		"rootAdress": "0xd76e4f33494756883cc1eea7d1533851745a5977",
-		"childAdress": "0xca8d54ae5a9007fe7cc0ca6d24d92bc2881a5ae9",
-		"privateKey": "2da088c9bd534b098812066542379739633c8d74469d7f4156e960243f9b47bc",
-		"rootAdmin": "0x874af12fdd45814eb21d123a69000db3a91ca90d",
-		"childAdmin": "0x874af12fdd45814eb21d123a69000db3a91ca90d"
+  "rooturl": "http://127.0.0.1:47768",
+  "childurl": "http://127.0.0.1:47768",
+  "rootwsurl": "http://127.0.0.1:47768",
+  "childwsurl": "http://127.0.0.1:47768",
+  "rootAdress": "0xb1d37cf6180ceb738ca45b5005a2f418c02e204b",
+  "childAdress": "0x85c2f277588ea1e6901ed59e587bea222c575f87",
+  "privateKey": "2da088c9bd534b098812066542379739633c8d74469d7f4156e960243f9b47bc",
+  "rootAdmin": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
+  "childAdmin": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
 }

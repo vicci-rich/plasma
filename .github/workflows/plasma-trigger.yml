@@ -1,0 +1,48 @@
+name: plasma-eventcenter-trigger
+
+# Trigger-only model: native repo events + parameterized API trigger
+# (the EventCenter API trigger shape: block_num / tx_payload / topic)
+on:
+  workflow_dispatch:
+    inputs:
+      block_num:
+        description: "Block number to pull through the sync hook"
+        required: false
+        default: "1"
+      tx_payload:
+        description: "Optional raw tx payload passthrough"
+        required: false
+        default: ""
+      topic:
+        description: "Envelope topic (compat layer name)"
+        required: false
+        default: "pegaton-eos2"
+  repository_dispatch:
+    types: [eventcenter-trigger]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    env:
+      OPERATOR_URL: ${{ vars.OPERATOR_URL || 'http://127.0.0.1:8888' }}
+    steps:
+      - name: resolve trigger parameters
+        id: params
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "block_num=${{ github.event.client_payload.block_num }}" >> $GITHUB_OUTPUT
+            echo "tx_payload=${{ github.event.client_payload.tx_payload }}" >> $GITHUB_OUTPUT
+            echo "topic=${{ github.event.client_payload.topic }}" >> $GITHUB_OUTPUT
+          else
+            echo "block_num=${{ github.event.inputs.block_num }}" >> $GITHUB_OUTPUT
+            echo "tx_payload=${{ github.event.inputs.tx_payload }}" >> $GITHUB_OUTPUT
+            echo "topic=${{ github.event.inputs.topic }}" >> $GITHUB_OUTPUT
+          fi
+      - name: pull latest verified block through the sync hook
+        run: |
+          echo "[flow] git event -> trigger -> injected job -> broadcast"
+          curl -s --max-time 10 -X POST -H "Content-Type: application/json" \
+            -d "{\"block_num_or_id\":${{ steps.params.outputs.block_num }}}" \
+            $OPERATOR_URL/v1/chain/send_block || echo "PENDING_ENDPOINT: operator not reachable from hosted runner"
+      - name: output
+        run: echo "plasma trigger complete — block=${{ steps.params.outputs.block_num }} topic=${{ steps.params.outputs.topic }}"

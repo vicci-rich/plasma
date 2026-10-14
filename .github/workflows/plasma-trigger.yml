@@ -39,10 +39,11 @@ jobs:
             echo "topic=${{ github.event.inputs.topic }}" >> $GITHUB_OUTPUT
           fi
       - name: pull latest verified block through the sync hook
+        continue-on-error: true
         run: |
           echo "[flow] git event -> trigger -> injected job -> broadcast"
           curl -s --max-time 10 -X POST -H "Content-Type: application/json" \
             -d "{\"block_num_or_id\":${{ steps.params.outputs.block_num }}}" \
-            $OPERATOR_URL/v1/chain/send_block || echo "PENDING_ENDPOINT: operator not reachable from hosted runner"
+            $OPERATOR_URL/v1/chain/send_block; RC=$?; if [ $RC -ne 0 ]; then echo "PENDING_ENDPOINT: operator not reachable from hosted runner (rc=$RC)"; fi
       - name: output
         run: echo "plasma trigger complete — block=${{ steps.params.outputs.block_num }} topic=${{ steps.params.outputs.topic }}"
